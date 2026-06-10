@@ -1,0 +1,2 @@
+name = "excel"
+description = "Processamento de Excel (pandas/openpyxl): instrução, skill, agente, prompt, pipeline com testes e dependências. Requer o pack python."

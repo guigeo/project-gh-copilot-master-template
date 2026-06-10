@@ -1,0 +1,28 @@
+# Declarative Automation Bundle (DAB).
+# Ciclo: databricks bundle validate -> deploy -t dev -> run -t dev <recurso> -> deploy -t prod
+bundle:
+  name: nome_pacote
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Catálogo do Unity Catalog usado pelo target.
+    default: main
+
+targets:
+  dev:
+    # Prefixa recursos com o usuário e pausa schedules/triggers.
+    mode: development
+    default: true
+    workspace:
+      host: <https://seu-workspace.cloud.databricks.com>
+
+  prod:
+    mode: production
+    workspace:
+      host: <https://seu-workspace.cloud.databricks.com>
+    # Em produção, rode como service principal, não como usuário:
+    # run_as:
+    #   service_principal_name: <application-id-do-service-principal>

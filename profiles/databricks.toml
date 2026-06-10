@@ -1,0 +1,4 @@
+name = "databricks"
+description = "Databricks: Python + PySpark + Lakeflow/DLT e bundles (DABs) com targets dev/prod."
+extends = ["common"]
+packs = ["python", "pyspark", "databricks"]

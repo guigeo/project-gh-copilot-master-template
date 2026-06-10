@@ -1,0 +1,4 @@
+name = "python"
+description = "Projeto Python puro: APIs, scripts, automação."
+extends = ["common"]
+packs = ["python"]

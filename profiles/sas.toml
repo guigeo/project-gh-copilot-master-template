@@ -1,0 +1,4 @@
+name = "sas"
+description = "Projeto SAS: análise, ETL legado e migração SAS→Python."
+extends = ["common"]
+packs = ["sas"]

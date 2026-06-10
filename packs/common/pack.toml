@@ -1,0 +1,2 @@
+name = "common"
+description = "Base para qualquer projeto: instruções globais, AGENTS, PR template, docs, prompts e skills gerais."

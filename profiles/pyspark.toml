@@ -1,0 +1,4 @@
+name = "pyspark"
+description = "PySpark: Python + Spark com SparkSession testável, otimização e revisor."
+extends = ["common"]
+packs = ["python", "pyspark"]

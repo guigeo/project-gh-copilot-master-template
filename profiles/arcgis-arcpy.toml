@@ -1,0 +1,4 @@
+name = "arcgis-arcpy"
+description = "Projeto com ArcGIS Pro, ArcPy e geoprocessamento."
+extends = ["common"]
+packs = ["python", "arcgis-arcpy"]

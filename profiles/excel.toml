@@ -1,0 +1,4 @@
+name = "excel"
+description = "Python focado em ingestão, validação e transformação de Excel."
+extends = ["common"]
+packs = ["python", "excel"]

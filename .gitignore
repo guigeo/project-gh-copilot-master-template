@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+.env
+
+# OS/IDE
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Dados locais
+data/
+*.csv
+*.parquet
+*.orc
+*.xlsx
+*.gdb/
+
+# Excel / planilhas locais
+*.xlsx
+*.xlsm
+*.xls
+~$*.xlsx
+~$*.xlsm
+
+# Permitir exemplos controlados, se quiser
+!tests/fixtures/*.xlsx
+!docs/examples/*.xlsx

@@ -1,0 +1,2 @@
+name = "pyspark"
+description = "PySpark: instrução de boas práticas Spark, skill de otimização de jobs, agente revisor, prompt de otimização e scaffold com SparkSession testável. Requer o pack python."

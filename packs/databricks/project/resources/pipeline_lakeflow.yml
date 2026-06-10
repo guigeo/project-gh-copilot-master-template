@@ -1,0 +1,12 @@
+# Pipeline declarativo (Lakeflow/DLT) serverless.
+# Teste: databricks bundle run -t dev nome_pacote_pipeline
+resources:
+  pipelines:
+    nome_pacote_pipeline:
+      name: nome_pacote_pipeline
+      serverless: true
+      catalog: ${var.catalog}
+      schema: nome_pacote_${bundle.target}
+      libraries:
+        - file:
+            path: ../src/nome_pacote/lakeflow_pipeline.py

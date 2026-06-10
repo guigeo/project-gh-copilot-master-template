@@ -1,0 +1,22 @@
+name: validate-template
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validar estrutura, front-matter e orçamento de tokens
+        run: python scripts/validate.py
+      - name: Smoke test dos profiles (dry-run)
+        run: |
+          for p in $(python scripts/new_project.py --list | sed -n 's/^- \([^:]*\):.*/\1/p'); do
+            echo "== $p =="
+            python scripts/new_project.py --profile "$p" --target "/tmp/smoke-$p" --dry-run > /dev/null
+          done

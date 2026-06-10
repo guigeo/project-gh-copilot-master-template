@@ -1,0 +1,4 @@
+name = "sql"
+description = "Projeto focado em queries, modelos analíticos e performance de SQL."
+extends = ["common"]
+packs = ["sql"]

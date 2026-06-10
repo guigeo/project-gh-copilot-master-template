@@ -1,0 +1,4 @@
+name = "data-engineering"
+description = "Engenharia de dados: Python + SQL + documentação + testes."
+extends = ["common"]
+packs = ["python", "sql", "data-engineering"]

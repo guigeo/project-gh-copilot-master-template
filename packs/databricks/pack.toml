@@ -1,0 +1,2 @@
+name = "databricks"
+description = "Databricks: instrução de Unity Catalog/Lakeflow/serverless, skill de Declarative Automation Bundles (DABs), agente revisor, prompt e scaffold com bundle dev/prod + pipeline declarativo. Requer os packs python e pyspark."

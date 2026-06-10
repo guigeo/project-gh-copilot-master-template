@@ -1,0 +1,2 @@
+name = "arcgis-arcpy"
+description = "ArcGIS Pro / ArcPy: instrução de geoprocessamento, skill de toolbox, agente especialista, prompt e scaffold. Requer o pack python."

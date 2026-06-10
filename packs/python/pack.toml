@@ -1,0 +1,2 @@
+name = "python"
+description = "Python com uv, pytest, ruff e layout src/: instruções, skill de setup, agente revisor, prompt, CI + copilot-setup-steps e scaffold."
