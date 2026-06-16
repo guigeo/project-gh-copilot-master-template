@@ -32,8 +32,10 @@ from _template_lib import (
     ResolvedProfile,
     TemplateError,
     build_file_map,
+    collect_python_requirements,
     estimate_tokens_for_file,
     list_profiles,
+    render_pyproject,
     resolve_profile,
 )
 
@@ -163,6 +165,21 @@ def replace_token_in_text_files(target: Path, old: str, new: str) -> None:
             replace_in_file(path, old, new)
 
 
+def compose_pyproject(target: Path, profile: ResolvedProfile) -> None:
+    """Compõe o pyproject do projeto: injeta as deps declaradas pelos packs.
+
+    O pyproject base (do pack python) traz as sentinelas; cada pack contribui
+    com suas dependências via `[python]` no pack.toml.
+    """
+    path = target / "pyproject.toml"
+    if not path.exists():
+        return
+    deps, groups = collect_python_requirements(profile)
+    rendered = render_pyproject(path.read_text(encoding="utf-8"), deps, groups)
+    path.write_text(rendered, encoding="utf-8")
+    print(f"composed: pyproject.toml ({len(deps)} dep(s), {len(groups)} grupo(s))")
+
+
 def apply_python_project_naming(target: Path, project_name: str, force: bool) -> None:
     src_root = target / "src"
     old_pkg = src_root / "nome_pacote"
@@ -241,6 +258,7 @@ def main() -> int:
     copy_files(file_map, target, args.force)
 
     if PYTHON_PACK in profile.packs:
+        compose_pyproject(target, profile)
         apply_python_project_naming(target, project_name, args.force)
 
     write_project_manifest(target, profile, project_name)

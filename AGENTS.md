@@ -22,8 +22,23 @@ Repositório que gera projetos especializados de GitHub Copilot a partir de **pr
 - Ao criar um tema, prefira `scripts/new_theme.py` a montar arquivos na mão.
 - Instruções devem ter `applyTo`; skills e agents devem ter `name` + `description`.
 - Detalhe pesado vai para skills, não para instructions nem para a camada always-on.
+- **Dependências Python**: só o pack `python` traz `project/pyproject.toml` (base, com as
+  sentinelas `# __PACK_DEPENDENCIES__` e `# __PACK_DEPENDENCY_GROUPS__`). Um pack que precisa
+  de bibliotecas declara só os extras em `pack.toml`:
+
+  ```toml
+  [python]
+  dependencies = ["pandas>=2.2.0"]
+  [python.dependency-groups]   # opcional (grupos como dynamic)
+  dynamic = ["playwright>=1.47.0"]
+  ```
+
+  O `new_project` compõe um único pyproject a partir do base + os extras dos packs do profile
+  (ordem base→tema, sem duplicatas). Não recrie `pyproject.toml` em outros packs.
 - Não introduza segredos nem caminhos locais fixos.
-- Rode `uv run scripts/validate.py` antes de concluir qualquer alteração.
+- Rode `uv run scripts/validate.py` antes de concluir qualquer alteração. Ele também **gera cada
+  profile Python e roda `ruff check`/`ruff format`** no projeto — o scaffold tem de passar no
+  próprio CI. (Pule esse passo com `--no-lint` só em debug.)
 
 ## Comandos
 

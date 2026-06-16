@@ -5,6 +5,7 @@ description = "Descrição curta do projeto"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    # __PACK_DEPENDENCIES__
 ]
 
 [dependency-groups]
@@ -12,6 +13,7 @@ dev = [
     "pytest>=8.0.0",
     "ruff>=0.8.0",
 ]
+# __PACK_DEPENDENCY_GROUPS__
 
 [build-system]
 requires = ["hatchling"]

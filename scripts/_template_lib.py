@@ -199,5 +199,69 @@ def estimate_tokens_for_file(path: Path) -> int:
         return max(1, path.stat().st_size // 4)
 
 
+# Sentinelas no pyproject base (packs/python/project/pyproject.toml) que o
+# new_project substitui pelas dependências compostas dos packs do profile.
+DEP_SENTINEL = "# __PACK_DEPENDENCIES__"
+GROUP_SENTINEL = "# __PACK_DEPENDENCY_GROUPS__"
+
+
+def collect_python_requirements(
+    profile: ResolvedProfile,
+) -> tuple[list[str], dict[str, list[str]]]:
+    """Junta as dependências declaradas em `[python]` de cada pack do profile.
+
+    Cada pack declara só seus extras em `pack.toml`:
+
+        [python]
+        dependencies = ["pandas>=2.2.0"]
+        [python.dependency-groups]
+        dynamic = ["playwright>=1.47.0"]
+
+    Retorna (dependencies, dependency_groups), na ordem dos packs (base -> tema)
+    e sem duplicatas, preservando a primeira ocorrência.
+    """
+    deps: list[str] = []
+    seen: set[str] = set()
+    groups: dict[str, list[str]] = {}
+
+    for pack in profile.packs:
+        meta = PACKS_DIR / pack / "pack.toml"
+        if not meta.exists():
+            continue
+        python_cfg = _read_toml(meta).get("python", {})
+        for dep in python_cfg.get("dependencies", []):
+            if dep not in seen:
+                seen.add(dep)
+                deps.append(dep)
+        for group, items in python_cfg.get("dependency-groups", {}).items():
+            bucket = groups.setdefault(group, [])
+            for item in items:
+                if item not in bucket:
+                    bucket.append(item)
+
+    return deps, groups
+
+
+def render_pyproject(base_text: str, deps: list[str], groups: dict[str, list[str]]) -> str:
+    """Substitui as sentinelas do pyproject base pelas deps/grupos compostos.
+
+    Mantém o restante do arquivo (ruff, build-system, pytest) intacto.
+    """
+    lines: list[str] = []
+    for line in base_text.splitlines():
+        stripped = line.strip()
+        if stripped == DEP_SENTINEL:
+            lines.extend(f'    "{dep}",' for dep in deps)
+            continue
+        if stripped == GROUP_SENTINEL:
+            for group, items in groups.items():
+                lines.append(f"{group} = [")
+                lines.extend(f'    "{item}",' for item in items)
+                lines.append("]")
+            continue
+        lines.append(line)
+    return "\n".join(lines) + "\n"
+
+
 def eprint(*args: object) -> None:
     print(*args, file=sys.stderr)

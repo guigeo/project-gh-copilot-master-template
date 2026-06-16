@@ -1,2 +1,10 @@
 name = "web-scraping"
 description = "Raspagem de dados web responsável (httpx, BeautifulSoup, tenacity): instrução, skills de estratégia e crawling resiliente, agente revisor, prompts e scaffold com cliente polido e parsing puro. Requer o pack python."
+
+[python]
+dependencies = ["httpx>=0.27.0", "beautifulsoup4>=4.12.0", "lxml>=5.2.0", "tenacity>=9.0.0"]
+
+# Páginas que só renderizam por JavaScript: uv sync --group dynamic
+# e depois uv run playwright install chromium.
+[python.dependency-groups]
+dynamic = ["playwright>=1.47.0"]
