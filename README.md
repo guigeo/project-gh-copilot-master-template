@@ -48,7 +48,7 @@ Reduza o contexto inicial com flags: `--without-agents`, `--without-skills`, `--
 | `common` | common | Base para qualquer projeto |
 | `python` | common, python | Python puro, APIs, scripts |
 | `python-minimal` | common, python | Python com contexto mínimo (sem agents/skills/prompts/CI) |
-| `excel` | common, python, excel | Ingestão/validação/transformação de Excel |
+| `excel` | common, python, pandas, excel | Ingestão/validação/transformação de Excel (compõe pandas) |
 | `sql` | common, sql | Queries, modelos analíticos, performance |
 | `sas` | common, sas | Análise SAS, ETL legado, migração SAS→Python |
 | `arcgis-arcpy` | common, python, arcgis-arcpy | ArcGIS Pro, ArcPy, geoprocessamento |

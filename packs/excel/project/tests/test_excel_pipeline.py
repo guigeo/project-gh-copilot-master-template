@@ -1,8 +1,8 @@
 from pathlib import Path
 
-import pandas as pd
 import pytest
 
+import pandas as pd
 from nome_pacote.excel_pipeline import (
     read_excel_sheet,
     validate_excel_input,

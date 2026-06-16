@@ -22,7 +22,7 @@ Visão de alto nível do repositório do template. Para detalhes, ver
 |---|---|
 | `common` | copilot-instructions, AGENTS, PR template, docs, prompts gerais, skills gerais |
 | `python` | instruções python/tests, skill de setup, agente revisor, prompt, CI + copilot-setup-steps, scaffold |
-| `excel` | instrução, skill, agente, prompt, pipeline com testes e deps pandas/openpyxl (requer python) |
+| `excel` | instrução, skill, agente, prompt e pipeline com testes; compõe o pack pandas e adiciona openpyxl (requer python e pandas) |
 | `sql` | instrução, skill, agente revisor, prompt de otimização, exemplos |
 | `sas` | instrução, agente, skill SAS→Python, prompt, scaffold |
 | `arcgis-arcpy` | instrução, skill, agente, prompt e scaffold de ArcPy (requer python) |

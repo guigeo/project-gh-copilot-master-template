@@ -1,2 +1,6 @@
 name = "excel"
-description = "Processamento de Excel (pandas/openpyxl): instrução, skill, agente, prompt, pipeline com testes e dependências. Requer o pack python."
+description = "Processamento de Excel (openpyxl): instrução, skill, agente, prompt e pipeline com testes. Compõe o pack pandas e adiciona o específico de planilha. Requer os packs python e pandas."
+
+# pandas/pyarrow vêm do pack pandas; aqui só o específico de planilha.
+[python]
+dependencies = ["openpyxl>=3.1.0"]
