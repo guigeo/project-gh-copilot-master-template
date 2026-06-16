@@ -1,8 +1,9 @@
 """Teste do schema pandera de vendas."""
 
-import pandas as pd
 import pytest
+from pandera.errors import SchemaError
 
+import pandas as pd
 from nome_pacote.schemas import validar_vendas
 
 
@@ -32,5 +33,5 @@ def test_validar_vendas_rejeita_valor_negativo() -> None:
         }
     )
 
-    with pytest.raises(Exception):  # SchemaError do pandera
+    with pytest.raises(SchemaError):
         validar_vendas(df)

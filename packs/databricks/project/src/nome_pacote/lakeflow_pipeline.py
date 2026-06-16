@@ -24,6 +24,4 @@ def bronze_exemplo():
 @dlt.expect_or_drop("valor_nao_negativo", "valor >= 0")
 @dlt.expect_or_drop("id_presente", "id IS NOT NULL")
 def silver_exemplo():
-    return dlt.read_stream("bronze_exemplo").withColumn(
-        "ingerido_em", F.current_timestamp()
-    )
+    return dlt.read_stream("bronze_exemplo").withColumn("ingerido_em", F.current_timestamp())

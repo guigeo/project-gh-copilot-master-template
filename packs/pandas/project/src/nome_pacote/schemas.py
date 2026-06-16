@@ -6,14 +6,14 @@ confie na inferência de tipo em produção.
 
 from __future__ import annotations
 
-# pandera >= 0.20 recomenda o namespace `pandera.pandas`; mantém-se o fallback
-# para versões anteriores.
+import pandas as pd
+
+# pandera >= 0.20 recomenda o namespace `pandera.pandas`; fallback para versões
+# anteriores.
 try:
-    import pandera.pandas as pa
     from pandera.pandas import Check, Column, DataFrameSchema
 except ModuleNotFoundError:  # pandera < 0.20
-    import pandera as pa  # type: ignore[no-redef]
-    from pandera import Check, Column, DataFrameSchema  # type: ignore[no-redef]
+    from pandera import Check, Column, DataFrameSchema
 
 # Schema de exemplo: uma venda. Ajuste colunas/tipos ao seu domínio.
 vendas_schema = DataFrameSchema(
@@ -28,6 +28,6 @@ vendas_schema = DataFrameSchema(
 )
 
 
-def validar_vendas(df: "pa.typing.DataFrame") -> "pa.typing.DataFrame":
+def validar_vendas(df: pd.DataFrame) -> pd.DataFrame:
     """Valida (e coage tipos de) um DataFrame de vendas; levanta se violar o schema."""
     return vendas_schema.validate(df)

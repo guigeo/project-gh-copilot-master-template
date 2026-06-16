@@ -7,6 +7,7 @@ nunca depende de mutar uma view. Leitura e escrita ficam em `io`.
 from __future__ import annotations
 
 import numpy as np
+
 import pandas as pd
 
 
@@ -16,9 +17,7 @@ def normalizar_colunas(df: pd.DataFrame) -> pd.DataFrame:
     return df.rename(columns=renomeadas)
 
 
-def remover_duplicatas(
-    df: pd.DataFrame, chaves: list[str], coluna_ordem: str
-) -> pd.DataFrame:
+def remover_duplicatas(df: pd.DataFrame, chaves: list[str], coluna_ordem: str) -> pd.DataFrame:
     """Mantém a linha mais recente por chave de negócio, segundo `coluna_ordem`."""
     return (
         df.sort_values(coluna_ordem)

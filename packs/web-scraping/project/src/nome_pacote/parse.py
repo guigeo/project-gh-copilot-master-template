@@ -26,12 +26,7 @@ def _preco(texto: str | None) -> float | None:
     """Converte '1.234,56' ou 'R$ 99,90' em float; None se não der."""
     if not texto:
         return None
-    limpo = (
-        texto.replace("R$", "")
-        .replace(".", "")
-        .replace(",", ".")
-        .strip()
-    )
+    limpo = texto.replace("R$", "").replace(".", "").replace(",", ".").strip()
     try:
         return float(limpo)
     except ValueError:

@@ -1,9 +1,9 @@
 """Testes das transformações com frames pequenos e assert_frame_equal."""
 
-import pandas as pd
 import pytest
 from pandas.testing import assert_frame_equal
 
+import pandas as pd
 from nome_pacote.transformations import (
     faixa_valor,
     juntar_clientes,

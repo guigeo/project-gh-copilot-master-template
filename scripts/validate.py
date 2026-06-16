@@ -7,6 +7,9 @@ Checa:
 - Todo agent tem 'name' e 'description'.
 - A camada always-on de cada profile cabe no orçamento de tokens.
 - Nenhum arquivo de pack tem segredo óbvio ou caminho local fixo.
+- Cada profile Python gera um projeto que passa em `ruff check`/`ruff format`
+  (o mesmo lint do CI entregue ao projeto). Pulado se o ruff não estiver
+  disponível (rode com `uv run`, que o provisiona via PEP 723).
 
 Saída: código 0 se ok; 1 se houver erros. Avisos não falham (use --strict).
 Rode com `uv run scripts/validate.py` — o uv provisiona o Python
@@ -15,17 +18,23 @@ necessário automaticamente (metadados PEP 723 abaixo).
 
 # /// script
 # requires-python = ">=3.11"
+# dependencies = ["ruff"]
 # ///
 
 from __future__ import annotations
 
 import argparse
 import re
+import shutil
+import subprocess
+import sys
+import tempfile
 from pathlib import Path
 
 from _template_lib import (
     ALWAYS_ON_BUDGET_TOKENS,
     PACKS_DIR,
+    PYTHON_PACK,
     TemplateError,
     build_file_map,
     estimate_tokens_for_file,
@@ -165,15 +174,66 @@ def check_secrets(report: Report) -> None:
                     report.warn(f"{rel(path)}: {label} -> {line.strip()[:80]}")
 
 
+def _python_profiles() -> list[str]:
+    """Profiles cujos packs incluem o pack python (geram um pyproject)."""
+    nomes: list[str] = []
+    for name in list_profiles():
+        try:
+            if PYTHON_PACK in resolve_profile(name).packs:
+                nomes.append(name)
+        except TemplateError:
+            continue
+    return nomes
+
+
+def check_scaffold_lint(report: Report) -> None:
+    """Gera cada profile Python e roda o mesmo lint do CI (ruff) no projeto.
+
+    Linta o artefato gerado — não o scaffold cru — porque a classificação de
+    imports do ruff depende do nome do pacote do projeto; só o projeto final
+    reflete o que o CI entregue ao usuário vai checar.
+    """
+    if shutil.which("ruff") is None:
+        report.warn("ruff indisponível; lint dos scaffolds pulado (rode com `uv run`)")
+        return
+
+    new_project = Path(__file__).resolve().parent / "new_project.py"
+    for name in _python_profiles():
+        with tempfile.TemporaryDirectory() as tmp:
+            gen = subprocess.run(
+                [sys.executable, str(new_project), "--profile", name,
+                 "--target", tmp, "--project-name", "lint check", "--force"],
+                capture_output=True, text=True,
+            )
+            if gen.returncode != 0:
+                report.error(f"lint '{name}': falha ao gerar projeto -> {gen.stderr.strip()[:200]}")
+                continue
+            # cwd no projeto gerado: o ruff detecta a raiz/first-party pelo cwd,
+            # exatamente como o CI (`ruff check .` na raiz do projeto).
+            check = subprocess.run(["ruff", "check", "."], cwd=tmp, capture_output=True, text=True)
+            if check.returncode != 0:
+                report.error(f"profile '{name}': scaffold falha em 'ruff check'\n{check.stdout.strip()}")
+            fmt = subprocess.run(
+                ["ruff", "format", "--check", "."], cwd=tmp, capture_output=True, text=True
+            )
+            if fmt.returncode != 0:
+                detalhe = (fmt.stdout or fmt.stderr).strip()
+                report.error(f"profile '{name}': scaffold falha em 'ruff format --check'\n{detalhe}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Valida estrutura e orçamento de tokens do template.")
     parser.add_argument("--strict", action="store_true", help="Trata avisos como erros")
+    parser.add_argument("--no-lint", action="store_true",
+                        help="Pula o lint (ruff) dos projetos gerados")
     args = parser.parse_args()
 
     report = Report()
     check_profiles(report)
     check_components(report)
     check_secrets(report)
+    if not args.no_lint:
+        check_scaffold_lint(report)
 
     for warn in report.warnings:
         print(f"AVISO: {warn}")

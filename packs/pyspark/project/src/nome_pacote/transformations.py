@@ -18,8 +18,4 @@ def remover_duplicatas(df: DataFrame, chaves: list[str], coluna_ordem: str) -> D
     from pyspark.sql.window import Window
 
     janela = Window.partitionBy(*chaves).orderBy(F.col(coluna_ordem).desc())
-    return (
-        df.withColumn("_rn", F.row_number().over(janela))
-        .filter(F.col("_rn") == 1)
-        .drop("_rn")
-    )
+    return df.withColumn("_rn", F.row_number().over(janela)).filter(F.col("_rn") == 1).drop("_rn")
