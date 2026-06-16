@@ -1,0 +1,4 @@
+name = "web-scraping"
+description = "Web scraping responsável: Python + httpx/BeautifulSoup, robots.txt, rate limiting, retry/backoff e parsing testável."
+extends = ["common"]
+packs = ["python", "web-scraping"]

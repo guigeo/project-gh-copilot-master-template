@@ -1,0 +1,2 @@
+name = "web-scraping"
+description = "Raspagem de dados web responsável (httpx, BeautifulSoup, tenacity): instrução, skills de estratégia e crawling resiliente, agente revisor, prompts e scaffold com cliente polido e parsing puro. Requer o pack python."

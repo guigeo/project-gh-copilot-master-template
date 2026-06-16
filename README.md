@@ -55,6 +55,7 @@ Reduza o contexto inicial com flags: `--without-agents`, `--without-skills`, `--
 | `data-engineering` | common, python, sql, data-engineering | Python + SQL + docs + testes |
 | `pyspark` | common, python, pyspark | Pipelines Spark, otimização de jobs, testes locais |
 | `databricks` | common, python, pyspark, databricks | Lakeflow/DLT, bundles (DABs) com dev/prod, Unity Catalog |
+| `web-scraping` | common, python, web-scraping | Raspagem responsável: robots.txt, rate limit, retry/backoff, parsing testável |
 
 ## Criar um tema novo
 

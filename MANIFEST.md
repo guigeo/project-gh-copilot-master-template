@@ -29,8 +29,9 @@ Visão de alto nível do repositório do template. Para detalhes, ver
 | `data-engineering` | instrução, skill de qualidade de dados, agente e prompt (combina com python + sql) |
 | `pyspark` | instrução Spark, skill de otimização, agente revisor, prompt e scaffold com SparkSession testável (requer python) |
 | `databricks` | instrução UC/Lakeflow/serverless, skill de bundles (DABs), agente revisor, prompt e scaffold com bundle dev/prod + pipeline declarativo (requer python e pyspark) |
+| `web-scraping` | instrução ética/robots/parsing, skills de estratégia e crawling resiliente, agente revisor, 2 prompts e scaffold httpx/BeautifulSoup com cliente polido e parsing puro (requer python) |
 
 ## Profiles
 
-`common`, `python`, `python-minimal`, `excel`, `sql`, `sas`, `arcgis-arcpy`, `data-engineering`, `pyspark`, `databricks`.
+`common`, `python`, `python-minimal`, `excel`, `sql`, `sas`, `arcgis-arcpy`, `data-engineering`, `pyspark`, `databricks`, `web-scraping`.
 Listar em runtime: `python scripts/new_project.py --list`.
