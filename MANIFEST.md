@@ -34,8 +34,9 @@ Visão de alto nível do repositório do template. Para detalhes, ver
 | `sql-sqlserver` | instrução T-SQL, skill sqlserver-tuning, agente revisor, prompt de migração e exemplo OFFSET/FETCH (requer sql) |
 | `sql-hive` | instrução HiveQL, skill hive-tuning, agente revisor, prompt de migração e exemplo de partição/map join (requer sql) |
 | `sql-oracle` | instrução Oracle/PL-SQL, skill oracle-tuning, agente revisor, prompt de migração e exemplo FETCH FIRST/bind (requer sql) |
+| `pandas` | instrução pandas moderno (CoW/dtypes Arrow), skills de performance e correção, agente revisor, 2 prompts e scaffold com transformações puras, schemas pandera, io Arrow/Parquet e testes assert_frame_equal (requer python) |
 
 ## Profiles
 
-`common`, `python`, `python-minimal`, `excel`, `sql`, `sas`, `arcgis-arcpy`, `data-engineering`, `pyspark`, `databricks`, `web-scraping`, `teradata`, `sqlserver`, `hive`, `oracle`.
+`common`, `python`, `python-minimal`, `excel`, `sql`, `sas`, `arcgis-arcpy`, `data-engineering`, `pyspark`, `databricks`, `web-scraping`, `teradata`, `sqlserver`, `hive`, `oracle`, `pandas`.
 Listar em runtime: `python scripts/new_project.py --list`.

@@ -1,0 +1,4 @@
+name = "pandas"
+description = "pandas moderno: Python + Copy-on-Write, dtypes Arrow, vetorização, merge validado e pandera, com transformações puras testáveis."
+extends = ["common"]
+packs = ["python", "pandas"]
