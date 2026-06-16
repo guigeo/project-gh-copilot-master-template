@@ -1,0 +1,4 @@
+name = "oracle"
+description = "Oracle: SQL + dialeto (bind variables, FETCH FIRST/ROWNUM, particionamento, hints, PL/SQL)."
+extends = ["common"]
+packs = ["sql", "sql-oracle"]

@@ -1,0 +1,2 @@
+name = "sql-sqlserver"
+description = "SQL Server (T-SQL): TOP/OFFSET-FETCH, predicados SARGable, índices clustered/nonclustered, planos, parameter sniffing e isolamento. Requer o pack sql."

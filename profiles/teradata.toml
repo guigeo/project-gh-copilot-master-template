@@ -1,0 +1,4 @@
+name = "teradata"
+description = "Teradata: SQL + dialeto (QUALIFY, Primary/Partitioned Index, skew, COLLECT STATS, EXPLAIN)."
+extends = ["common"]
+packs = ["sql", "sql-teradata"]

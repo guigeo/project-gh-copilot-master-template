@@ -1,0 +1,2 @@
+name = "sql-oracle"
+description = "Oracle (SQL + PL/SQL): bind variables, FETCH FIRST/ROWNUM, particionamento, hints, DBMS_XPLAN, DBMS_STATS e bulk PL/SQL. Requer o pack sql."

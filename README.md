@@ -56,6 +56,10 @@ Reduza o contexto inicial com flags: `--without-agents`, `--without-skills`, `--
 | `pyspark` | common, python, pyspark | Pipelines Spark, otimização de jobs, testes locais |
 | `databricks` | common, python, pyspark, databricks | Lakeflow/DLT, bundles (DABs) com dev/prod, Unity Catalog |
 | `web-scraping` | common, python, web-scraping | Raspagem responsável: robots.txt, rate limit, retry/backoff, parsing testável |
+| `teradata` | common, sql, sql-teradata | QUALIFY, Primary/Partitioned Index, skew, COLLECT STATS, EXPLAIN |
+| `sqlserver` | common, sql, sql-sqlserver | T-SQL: TOP/OFFSET, SARGable, índices, planos, parameter sniffing |
+| `hive` | common, sql, sql-hive | HiveQL: partições, bucketing, ORC/Parquet, map join, vetorização |
+| `oracle` | common, sql, sql-oracle | bind variables, FETCH FIRST/ROWNUM, particionamento, hints, PL/SQL |
 
 ## Criar um tema novo
 

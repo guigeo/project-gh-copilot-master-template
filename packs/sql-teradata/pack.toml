@@ -1,0 +1,2 @@
+name = "sql-teradata"
+description = "Teradata: QUALIFY, Primary/Partitioned Index e distribuição, skew, COLLECT STATS, EXPLAIN e SET/MULTISET. Requer o pack sql."

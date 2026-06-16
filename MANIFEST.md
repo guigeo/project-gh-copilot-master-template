@@ -30,8 +30,12 @@ Visão de alto nível do repositório do template. Para detalhes, ver
 | `pyspark` | instrução Spark, skill de otimização, agente revisor, prompt e scaffold com SparkSession testável (requer python) |
 | `databricks` | instrução UC/Lakeflow/serverless, skill de bundles (DABs), agente revisor, prompt e scaffold com bundle dev/prod + pipeline declarativo (requer python e pyspark) |
 | `web-scraping` | instrução ética/robots/parsing, skills de estratégia e crawling resiliente, agente revisor, 2 prompts e scaffold httpx/BeautifulSoup com cliente polido e parsing puro (requer python) |
+| `sql-teradata` | instrução Teradata, skill teradata-tuning, agente revisor, prompt de migração e exemplo QUALIFY (requer sql) |
+| `sql-sqlserver` | instrução T-SQL, skill sqlserver-tuning, agente revisor, prompt de migração e exemplo OFFSET/FETCH (requer sql) |
+| `sql-hive` | instrução HiveQL, skill hive-tuning, agente revisor, prompt de migração e exemplo de partição/map join (requer sql) |
+| `sql-oracle` | instrução Oracle/PL-SQL, skill oracle-tuning, agente revisor, prompt de migração e exemplo FETCH FIRST/bind (requer sql) |
 
 ## Profiles
 
-`common`, `python`, `python-minimal`, `excel`, `sql`, `sas`, `arcgis-arcpy`, `data-engineering`, `pyspark`, `databricks`, `web-scraping`.
+`common`, `python`, `python-minimal`, `excel`, `sql`, `sas`, `arcgis-arcpy`, `data-engineering`, `pyspark`, `databricks`, `web-scraping`, `teradata`, `sqlserver`, `hive`, `oracle`.
 Listar em runtime: `python scripts/new_project.py --list`.

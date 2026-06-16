@@ -1,0 +1,4 @@
+name = "hive"
+description = "Hive / HiveQL: SQL + dialeto (partições, bucketing, ORC/Parquet, map join, vetorização)."
+extends = ["common"]
+packs = ["sql", "sql-hive"]

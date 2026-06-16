@@ -1,0 +1,4 @@
+name = "sqlserver"
+description = "SQL Server / T-SQL: SQL + dialeto (TOP/OFFSET, SARGable, índices, planos, isolamento)."
+extends = ["common"]
+packs = ["sql", "sql-sqlserver"]

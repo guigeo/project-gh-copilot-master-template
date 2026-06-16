@@ -1,0 +1,2 @@
+name = "sql-hive"
+description = "Hive (HiveQL): partições, bucketing, ORC/Parquet, partition pruning, map join, vetorização e estatísticas. Requer o pack sql."
