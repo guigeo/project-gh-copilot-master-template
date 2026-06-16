@@ -61,6 +61,7 @@ Reduza o contexto inicial com flags: `--without-agents`, `--without-skills`, `--
 | `hive` | common, sql, sql-hive | HiveQL: partições, bucketing, ORC/Parquet, map join, vetorização |
 | `oracle` | common, sql, sql-oracle | bind variables, FETCH FIRST/ROWNUM, particionamento, hints, PL/SQL |
 | `pandas` | common, python, pandas | pandas moderno: Copy-on-Write, dtypes Arrow, vetorização, merge validado, pandera |
+| `powerpoint` | common, python, pandas, powerpoint | Deck data-driven (python-pptx): template/placeholders, gráficos/tabelas nativos |
 
 ## Criar um tema novo
 

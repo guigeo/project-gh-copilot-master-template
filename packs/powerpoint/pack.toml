@@ -1,0 +1,6 @@
+name = "powerpoint"
+description = "Geração de PowerPoint orientada a dados (python-pptx): template/placeholders, gráficos e tabelas NATIVOS a partir de DataFrame, builders puros e testáveis. Instrução, skills de templating e deck-from-data, agente revisor, prompt e scaffold. Requer os packs python e pandas."
+
+# Só python-pptx: pandas/pyarrow/pandera vêm do pack pandas via composição do profile.
+[python]
+dependencies = ["python-pptx>=1.0.0"]

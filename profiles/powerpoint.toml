@@ -1,0 +1,4 @@
+name = "powerpoint"
+description = "PowerPoint data-driven: Python + pandas + python-pptx, deck a partir de template e DataFrame com gráficos/tabelas nativos e builders testáveis."
+extends = ["common"]
+packs = ["python", "pandas", "powerpoint"]
