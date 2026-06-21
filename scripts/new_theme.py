@@ -4,17 +4,12 @@ Gera o conjunto que o GitHub Copilot recomenda para especializar um tema:
 instrução com applyTo, skill sob-demanda, agente especialista, prompt e um
 profile que estende 'common'. Tudo com front-matter correto e placeholders.
 
+Requer apenas Python 3.11+ (usa só a biblioteca padrão).
+
 Exemplo:
-    uv run scripts/new_theme.py --name dbt --globs "**/*.sql,**/*.yml" \
+    python scripts/new_theme.py --name dbt --globs "**/*.sql,**/*.yml" \
         --description "Projetos dbt"
-
-Rode com `uv run` — o uv provisiona o Python necessário automaticamente
-(metadados PEP 723 abaixo).
 """
-
-# /// script
-# requires-python = ">=3.11"
-# ///
 
 from __future__ import annotations
 
@@ -157,8 +152,8 @@ def main() -> int:
 
     print("\nPróximos passos:")
     print(f"1. Edite os placeholders em packs/{name}/ com as regras reais.")
-    print("2. Rode: uv run scripts/validate.py")
-    print(f"3. Teste:  uv run scripts/new_project.py --profile {name} --target /tmp/proj-{name} --dry-run")
+    print("2. Rode: python scripts/validate.py")
+    print(f"3. Teste:  python scripts/new_project.py --profile {name} --target /tmp/proj-{name} --dry-run")
     return 0
 
 

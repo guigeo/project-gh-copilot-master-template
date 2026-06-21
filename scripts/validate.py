@@ -9,17 +9,12 @@ Checa:
 - Nenhum arquivo de pack tem segredo óbvio ou caminho local fixo.
 - Cada profile Python gera um projeto que passa em `ruff check`/`ruff format`
   (o mesmo lint do CI entregue ao projeto). Pulado se o ruff não estiver
-  disponível (rode com `uv run`, que o provisiona via PEP 723).
+  instalado (`pip install ruff`).
 
+Requer apenas Python 3.11+ (usa só a biblioteca padrão; o ruff é opcional).
 Saída: código 0 se ok; 1 se houver erros. Avisos não falham (use --strict).
-Rode com `uv run scripts/validate.py` — o uv provisiona o Python
-necessário automaticamente (metadados PEP 723 abaixo).
+Rode com: python scripts/validate.py
 """
-
-# /// script
-# requires-python = ">=3.11"
-# dependencies = ["ruff"]
-# ///
 
 from __future__ import annotations
 
@@ -194,7 +189,7 @@ def check_scaffold_lint(report: Report) -> None:
     reflete o que o CI entregue ao usuário vai checar.
     """
     if shutil.which("ruff") is None:
-        report.warn("ruff indisponível; lint dos scaffolds pulado (rode com `uv run`)")
+        report.warn("ruff indisponível; lint dos scaffolds pulado (instale com `pip install ruff`)")
         return
 
     new_project = Path(__file__).resolve().parent / "new_project.py"

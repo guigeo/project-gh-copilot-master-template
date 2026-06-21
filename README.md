@@ -11,6 +11,8 @@ Template central para iniciar projetos já especializados em um tema (Python, SQ
 ## Estrutura do template
 
 ```text
+novo-projeto.cmd   # launcher Windows (abre o assistente; só precisa de Python 3.11+)
+novo-projeto.sh    # launcher macOS/Linux (idem)
 profiles/          # manifestos TOML (um por profile)
 packs/             # capability packs (um por tema)
   <tema>/
@@ -26,16 +28,30 @@ docs/              # documentação
 
 ## Criar um projeto
 
+**Forma mais simples — um comando, modo interativo.** Precisa só de Python 3.11+ instalado (sem uv, sem instalar nada). O assistente pergunta profile, nome e pasta:
+
+```bash
+# Windows
+novo-projeto.cmd
+
+# macOS / Linux
+./novo-projeto.sh
+```
+
+> No Windows você também pode dar **duplo-clique** em `novo-projeto.cmd`.
+
+**Forma direta (sem assistente):** passe os argumentos para o mesmo comando — ou chame o script com `python`:
+
 ```bash
 # Listar profiles
-uv run scripts/new_project.py --list
+./novo-projeto.sh --list                 # ou: python scripts/new_project.py --list
 
 # Simular (mostra plano + orçamento de tokens, sem gravar)
-uv run scripts/new_project.py --profile python --target ./meu-projeto \
+python scripts/new_project.py --profile python --target ./meu-projeto \
   --project-name "Meu Projeto" --dry-run
 
 # Criar de fato
-uv run scripts/new_project.py --profile python --target ./meu-projeto \
+python scripts/new_project.py --profile python --target ./meu-projeto \
   --project-name "Meu Projeto"
 ```
 
@@ -66,7 +82,7 @@ Reduza o contexto inicial com flags: `--without-agents`, `--without-skills`, `--
 ## Criar um tema novo
 
 ```bash
-uv run scripts/new_theme.py --name dbt --globs "**/*.sql,**/*.yml" \
+python scripts/new_theme.py --name dbt --globs "**/*.sql,**/*.yml" \
   --description "Projetos dbt"
 ```
 
@@ -75,14 +91,16 @@ Gera `packs/dbt/` (instrução, skill, agente, prompt, scaffold) e `profiles/dbt
 ## Validar
 
 ```bash
-uv run scripts/validate.py          # erros falham; avisos não
-uv run scripts/validate.py --strict # avisos também falham
+python scripts/validate.py          # erros falham; avisos não
+python scripts/validate.py --strict # avisos também falham
 ```
+
+O lint dos scaffolds usa `ruff` se ele estiver instalado (`pip install ruff`); se não, é pulado com um aviso.
 
 ## Requisitos
 
-- Apenas [uv](https://docs.astral.sh/uv/getting-started/installation/): os scripts declaram `requires-python >= 3.11` via PEP 723 e o uv baixa o Python sozinho se necessário.
-- Sem uv: qualquer Python 3.11+ com `python scripts/<script>.py ...` (usa só a stdlib).
+- **Apenas Python 3.11+** — instale em <https://www.python.org/downloads/> (no Windows, marque *Add Python to PATH*). Os scripts usam só a biblioteca padrão; **nada mais precisa ser instalado**.
+- Os launchers `novo-projeto.cmd` (Windows) e `novo-projeto.sh` (macOS/Linux) encontram o Python sozinhos e abrem o assistente.
 
 ## Princípio
 

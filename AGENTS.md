@@ -36,17 +36,21 @@ Repositório que gera projetos especializados de GitHub Copilot a partir de **pr
   O `new_project` compõe um único pyproject a partir do base + os extras dos packs do profile
   (ordem base→tema, sem duplicatas). Não recrie `pyproject.toml` em outros packs.
 - Não introduza segredos nem caminhos locais fixos.
-- Rode `uv run scripts/validate.py` antes de concluir qualquer alteração. Ele também **gera cada
+- Rode `python scripts/validate.py` antes de concluir qualquer alteração. Ele também **gera cada
   profile Python e roda `ruff check`/`ruff format`** no projeto — o scaffold tem de passar no
-  próprio CI. (Pule esse passo com `--no-lint` só em debug.)
+  próprio CI. (Pule esse passo com `--no-lint` só em debug. O lint exige `ruff`; instale com
+  `pip install ruff`.)
 
 ## Comandos
 
-Sempre use `uv run` (não `python` direto): os scripts exigem Python 3.11+
-e o uv provisiona a versão certa automaticamente (PEP 723).
+Os scripts do template exigem **apenas Python 3.11+** (usam só a biblioteca padrão).
+Use `python` (ou `python3`) direto — sem uv.
 
 ```bash
-uv run scripts/validate.py
-uv run scripts/new_project.py --list
-uv run scripts/new_project.py --profile <nome> --target <dir> --dry-run
+python scripts/validate.py
+python scripts/new_project.py --list
+python scripts/new_project.py --profile <nome> --target <dir> --dry-run
+
+# Ou abra o assistente interativo:
+./novo-projeto.sh          # Windows: novo-projeto.cmd
 ```

@@ -17,8 +17,8 @@ packs = ["python", "sql"]
 Pronto. Valide e teste:
 
 ```bash
-uv run scripts/validate.py
-uv run scripts/new_project.py --profile api-sql --target /tmp/api-sql --dry-run
+python scripts/validate.py
+python scripts/new_project.py --profile api-sql --target /tmp/api-sql --dry-run
 ```
 
 Campos do manifesto:
@@ -32,7 +32,7 @@ Campos do manifesto:
 Use o scaffolder, que já cria o conjunto recomendado pelo Copilot com front-matter correto:
 
 ```bash
-uv run scripts/new_theme.py --name databricks --globs "**/*.py" \
+python scripts/new_theme.py --name databricks --globs "**/*.py" \
   --description "Projetos Databricks" --on-python
 ```
 
@@ -55,8 +55,8 @@ Depois:
 
 1. Edite os placeholders em `packs/databricks/` com as regras reais.
 2. Mantenha a instrução curta; mova detalhe para a skill.
-3. `uv run scripts/validate.py`
-4. `uv run scripts/new_project.py --profile databricks --target /tmp/x --dry-run`
+3. `python scripts/validate.py`
+4. `python scripts/new_project.py --profile databricks --target /tmp/x --dry-run`
 
 ## Regras de qualidade
 
@@ -68,4 +68,4 @@ Depois:
 ## O que o `new_project.py` faz e não faz
 
 Faz: resolve o profile, copia arquivos, renomeia o pacote Python e grava `.copilot-template.json`.
-Não faz: instalar dependências, criar venv ou rodar testes — isso fica a cargo de `uv`/`pytest`.
+Não faz: instalar dependências, criar venv ou rodar testes — isso fica a cargo do projeto gerado (`pytest` e o gerenciador que ele adotar).

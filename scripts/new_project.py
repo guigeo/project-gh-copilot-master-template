@@ -5,13 +5,11 @@ em projetos Python, aplica o nome do pacote. Com --dry-run, mostra a
 contabilidade de tokens separando contexto sempre-carregado, sob-demanda
 e arquivos de projeto.
 
-Rode com `uv run scripts/new_project.py ...` — o uv provisiona o Python
-necessário automaticamente (metadados PEP 723 abaixo).
-"""
+Requer apenas Python 3.11+ (usa só a biblioteca padrão). A forma mais
+simples de rodar é sem argumentos — abre um assistente interativo:
 
-# /// script
-# requires-python = ">=3.11"
-# ///
+    python scripts/new_project.py        (ou: novo-projeto.cmd / ./novo-projeto.sh)
+"""
 
 from __future__ import annotations
 
@@ -89,7 +87,11 @@ def normalize_project_name(value: str) -> str:
 
 
 def print_token_report(
-    profile: ResolvedProfile, file_map: dict[str, tuple[Path, str]], target: Path, project_name: str
+    profile: ResolvedProfile,
+    file_map: dict[str, tuple[Path, str]],
+    target: Path,
+    project_name: str,
+    heading: str = "\nDRY RUN — nenhum arquivo foi copiado",
 ) -> None:
     stats: dict[str, dict[str, int]] = defaultdict(lambda: {"files": 0, "tokens": 0})
     for dest_rel, (src, category) in file_map.items():
@@ -103,7 +105,7 @@ def print_token_report(
         stats[c]["tokens"] for c in stats if c not in CONTEXT_CATEGORIES
     )
 
-    print("\nDRY RUN — nenhum arquivo foi copiado")
+    print(heading)
     print(f"Profile: {profile.name}  ({profile.description})")
     print(f"Packs:   {' -> '.join(profile.packs)}")
     if profile.exclude_categories:
@@ -209,6 +211,92 @@ def write_project_manifest(target: Path, profile: ResolvedProfile, project_name:
     print(f"wrote: .copilot-template.json")
 
 
+def _ask(prompt: str, default: str = "") -> str:
+    """input() com valor padrão exibido entre colchetes."""
+    suffix = f" [{default}]" if default else ""
+    try:
+        answer = input(f"{prompt}{suffix}: ").strip()
+    except EOFError:
+        answer = ""
+    return answer or default
+
+
+def _ask_yes_no(prompt: str, default: bool = True) -> bool:
+    hint = "S/n" if default else "s/N"
+    answer = _ask(f"{prompt} ({hint})").lower()
+    if not answer:
+        return default
+    return answer in {"s", "sim", "y", "yes"}
+
+
+def interactive_inputs() -> argparse.Namespace:
+    """Assistente interativo: pergunta profile, nome, pasta e contexto.
+
+    Devolve um Namespace compatível com o fluxo normal de main().
+    """
+    print("=" * 60)
+    print("  Assistente de criação de projeto (GitHub Copilot Template)")
+    print("=" * 60)
+
+    profiles = list_profiles()
+    print("\nProfiles disponíveis:")
+    descriptions: dict[str, str] = {}
+    for i, name in enumerate(profiles, start=1):
+        try:
+            prof = resolve_profile(name)
+            descriptions[name] = prof.description
+            print(f"  {i:>2}. {name:<16} {prof.description}")
+        except TemplateError as exc:
+            print(f"  {i:>2}. {name:<16} (erro: {exc})")
+
+    profile = ""
+    while not profile:
+        choice = _ask("\nEscolha o profile (número ou nome)", "python")
+        if choice.isdigit() and 1 <= int(choice) <= len(profiles):
+            profile = profiles[int(choice) - 1]
+        elif choice in profiles:
+            profile = choice
+        else:
+            print(f"  Opção inválida: {choice!r}. Tente de novo.")
+
+    project_name = ""
+    while not project_name:
+        raw = _ask("Nome do projeto")
+        if not raw:
+            print("  O nome é obrigatório.")
+            continue
+        try:
+            project_name = normalize_project_name(raw)
+        except ValueError:
+            print("  Nome inválido. Use letras/números.")
+    if project_name != raw.strip():
+        print(f"  (normalizado para: {project_name})")
+
+    parent = _ask(
+        "Diretório onde criar o projeto (a pasta do projeto será criada dentro dele)",
+        ".",
+    )
+    target = str((Path(parent).expanduser() / project_name).resolve())
+    print(f"  → o projeto será criado em: {target}")
+
+    full_context = _ask_yes_no("Incluir agents, skills, prompts e CI?", default=True)
+
+    print()
+    return argparse.Namespace(
+        profile=profile,
+        target=target,
+        project_name=project_name,
+        without_agents=not full_context,
+        without_skills=not full_context,
+        without_prompts=not full_context,
+        without_ci=not full_context,
+        dry_run=False,
+        force=False,
+        list=False,
+        interactive=True,
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Cria um projeto a partir de um profile do template.")
     parser.add_argument("--profile", help="Profile a aplicar (ver --list)")
@@ -221,11 +309,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--dry-run", action="store_true", help="Mostra plano + tokens, sem gravar")
     parser.add_argument("--force", action="store_true", help="Sobrescreve arquivos existentes")
     parser.add_argument("--list", action="store_true", help="Lista profiles disponíveis e sai")
+    parser.add_argument("-i", "--interactive", action="store_true",
+                        help="Assistente interativo (também é o padrão quando rodado sem argumentos)")
     return parser
 
 
 def main() -> int:
-    args = build_parser().parse_args()
+    parser = build_parser()
+    args = parser.parse_args()
 
     if args.list:
         print("Profiles disponíveis:")
@@ -237,8 +328,11 @@ def main() -> int:
                 print(f"- {name}: (erro) {exc}")
         return 0
 
-    if not args.profile or not args.target:
-        build_parser().error("--profile e --target são obrigatórios (ou use --list)")
+    # Sem profile/target: cai no assistente interativo (modo padrão e amigável).
+    if args.interactive or (not args.profile and not args.target):
+        args = interactive_inputs()
+    elif not args.profile or not args.target:
+        parser.error("--profile e --target são obrigatórios (ou rode sem argumentos para o assistente)")
 
     try:
         profile = resolve_profile(args.profile)
@@ -253,6 +347,14 @@ def main() -> int:
     if args.dry_run:
         print_token_report(profile, file_map, target, project_name)
         return 0
+
+    # No assistente, mostra o plano + orçamento e pede confirmação antes de gravar.
+    if getattr(args, "interactive", False):
+        print_token_report(profile, file_map, target, project_name,
+                           heading="\nPlano de criação")
+        if not _ask_yes_no("\nCriar o projeto agora?", default=True):
+            print("Cancelado. Nada foi gravado.")
+            return 0
 
     target.mkdir(parents=True, exist_ok=True)
     copy_files(file_map, target, args.force)

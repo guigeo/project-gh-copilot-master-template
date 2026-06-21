@@ -39,7 +39,7 @@ do projeto. O `new_project.py --dry-run` e o `validate.py` medem e orçam exatam
 Escolha o profile aderente ao caso de uso e reduza categorias opcionais:
 
 ```bash
-uv run scripts/new_project.py --profile data-engineering --target . \
+python scripts/new_project.py --profile data-engineering --target . \
   --without-agents --without-skills --without-prompts --without-ci --dry-run
 ```
 

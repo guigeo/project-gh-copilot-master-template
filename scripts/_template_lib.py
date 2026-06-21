@@ -16,10 +16,11 @@ try:
     import tomllib
 except ModuleNotFoundError:  # Python < 3.11
     sys.exit(
-        f"Este script precisa de Python 3.11+ (você está no {sys.version.split()[0]}).\n"
-        "Rode com uv, que baixa o Python certo sozinho:\n"
-        "    uv run scripts/<script>.py ...\n"
-        "Instalar uv: https://docs.astral.sh/uv/getting-started/installation/"
+        f"Este script precisa de Python 3.11 ou superior "
+        f"(você está no {sys.version.split()[0]}).\n"
+        "Instale uma versão mais nova em https://www.python.org/downloads/ "
+        "e rode de novo.\n"
+        "No Windows, use o launcher: py -3 scripts\\new_project.py"
     )
 
 from dataclasses import dataclass, field
