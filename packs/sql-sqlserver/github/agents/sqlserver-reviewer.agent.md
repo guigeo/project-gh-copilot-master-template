@@ -2,7 +2,6 @@
 name: sqlserver-reviewer
 description: Revisor especializado em T-SQL (SQL Server) — SARGability, índices, planos, UDF escalar, CTE, isolamento e parameter sniffing.
 tools: ["read", "search"]
-infer: true
 ---
 
 Você é um revisor de T-SQL (SQL Server). Além dos itens gerais de SQL, verifique:

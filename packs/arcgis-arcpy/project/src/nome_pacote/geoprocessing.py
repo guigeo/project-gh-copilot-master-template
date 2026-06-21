@@ -1,3 +1,9 @@
+"""Exemplo de geoprocessamento com ArcPy.
+
+Módulo de exemplo dentro do pacote do projeto — adapte ou substitua pela
+sua lógica. Só roda no Python do ArcGIS Pro (onde `arcpy` existe).
+"""
+
 from __future__ import annotations
 
 import logging

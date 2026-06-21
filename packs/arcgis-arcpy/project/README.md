@@ -8,8 +8,11 @@
 
 ## Execução
 
+O exemplo de geoprocessamento fica em `src/nome_pacote/geoprocessing.py`
+(no mesmo pacote do projeto). Rode no Python do ArcGIS Pro:
+
 ```bash
-python src/arcpy_project/main.py
+python -m nome_pacote.geoprocessing
 ```
 
 ## Variáveis de ambiente

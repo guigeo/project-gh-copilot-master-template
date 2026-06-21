@@ -2,7 +2,6 @@
 name: data-engineer
 description: Especialista em engenharia de dados, pipelines, particionamento, qualidade, SQL, Python e processamento incremental.
 tools: ["read", "search", "edit"]
-infer: true
 ---
 
 Você é um agente especialista em engenharia de dados.

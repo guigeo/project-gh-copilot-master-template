@@ -2,7 +2,6 @@
 name: sql-reviewer
 description: Revisor especializado em SQL, joins, granularidade, performance e governança de dados.
 tools: ["read", "search"]
-infer: true
 ---
 
 Você é um revisor SQL.

@@ -25,5 +25,6 @@ description: Padrões de Databricks — Unity Catalog, secrets, bundles (DABs), 
 ## Código e notebooks
 
 - Notebooks são camada fina de orquestração; lógica de transformação vive em módulos `src/` (funções puras `DataFrame -> DataFrame`, testáveis localmente com a fixture `spark`).
-- Em pipelines Lakeflow/DLT, declare expectativas de qualidade (`@dlt.expect...`) nas tabelas críticas.
+- Em pipelines Lakeflow, use a API atual `from pyspark import pipelines as dp` (`@dp.table`, `@dp.expect_or_drop`, `spark.readStream.table(...)`); a antiga `import dlt` ainda funciona, mas prefira `pyspark.pipelines`.
+- Declare expectativas de qualidade (`@dp.expect_or_drop`/`@dp.expect`) nas tabelas críticas.
 - Não use `display()`/`print` em código de produção; use `logging`.

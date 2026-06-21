@@ -2,7 +2,6 @@
 name: hive-reviewer
 description: Revisor especializado em Hive (HiveQL) — partições, pruning, formato colunar, map join, skew, small files e vetorização.
 tools: ["read", "search"]
-infer: true
 ---
 
 Você é um revisor de HiveQL. Além dos itens gerais de SQL, verifique:

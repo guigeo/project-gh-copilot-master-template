@@ -2,7 +2,6 @@
 name: python-reviewer
 description: Revisor especializado em Python, testes, estrutura de projeto, uv, ruff, logging e tratamento de erro.
 tools: ["read", "search"]
-infer: true
 ---
 
 Você é um revisor Python.

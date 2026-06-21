@@ -2,7 +2,6 @@
 name: pandas-reviewer
 description: Revisor especializado em pandas moderno — Copy-on-Write, dtypes, vetorização, merge validado, NaN e transformações puras testáveis.
 tools: ["read", "search"]
-infer: true
 ---
 
 Você é um revisor de código pandas. Além dos itens gerais de Python, verifique:
