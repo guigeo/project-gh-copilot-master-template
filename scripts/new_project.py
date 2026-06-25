@@ -46,6 +46,7 @@ CATEGORY_ORDER = [
     "prompts",
     "agents",
     "base",
+    "config",
     "build",
     "ci",
     "tests",
@@ -59,6 +60,7 @@ CATEGORY_LABEL = {
     "prompts": "Prompts (sob-demanda)",
     "agents": "Agents (sob-demanda)",
     "base": "Base do projeto (esqueleto, fora do contexto)",
+    "config": "Config central do pack (ex.: bundle Databricks)",
     "build": "Build Python (pyproject/Makefile, opt-in)",
     "ci": "CI / workflows (opt-in)",
     "tests": "Testes de exemplo (opt-in)",
@@ -484,9 +486,10 @@ def main() -> int:
     if PYTHON_PACK in profile.packs:
         if args.with_pyproject:
             compose_pyproject(target, profile)
-        # Renomeia/cria o pacote quando há módulos de exemplo ou pyproject.
-        if args.with_examples or args.with_pyproject:
-            apply_python_project_naming(target, project_name, args.with_pyproject, args.force)
+        # Sempre aplica o nome do pacote: substitui `nome_pacote` em todo arquivo
+        # de texto (inclui configs como databricks.yml/resources, que entram por
+        # padrão). Só renomeia/cria a pasta do pacote com exemplos ou pyproject.
+        apply_python_project_naming(target, project_name, args.with_pyproject, args.force)
 
     if args.with_uv:
         apply_uv_preference(target)

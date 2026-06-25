@@ -175,7 +175,11 @@ def classify(dest_rel: str) -> str:
         return "build"
     if p in BASE_PROJECT_FILES:
         return "base"
-    # Resto do project/ (módulos de exemplo, queries, configs de pack) é opt-in.
+    # Config central de pack (ex.: bundle Databricks): entra por padrão quando
+    # o pack está no profile, porque é estrutura do projeto, não exemplo.
+    if p == "databricks.yml" or p.startswith("resources/"):
+        return "config"
+    # Resto do project/ (módulos de exemplo, queries, READMEs de pack) é opt-in.
     return "examples"
 
 
