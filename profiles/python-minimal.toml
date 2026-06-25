@@ -1,5 +1,5 @@
 name = "python-minimal"
-description = "Python com contexto mínimo no bootstrap (sem agents, skills, prompts e CI)."
+description = "Python com contexto mínimo no bootstrap (sem agents, skills e prompts)."
 extends = ["common"]
 packs = ["python"]
-exclude_categories = ["agents", "skills", "prompts", "ci"]
+exclude_categories = ["agents", "skills", "prompts"]

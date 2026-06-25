@@ -50,18 +50,25 @@ packs/<tema>/
 
 Cada arquivo é classificado pelo destino:
 
-| Categoria | Entra no contexto a cada prompt? | Exemplos |
-|---|---|---|
-| `always-on` | **Sim** | `.github/copilot-instructions.md`, `AGENTS.md` |
-| `instructions` | Só quando o arquivo casa com `applyTo` | `python.instructions.md` |
-| `skills` | Só quando a skill é acionada | `SKILL.md` |
-| `prompts` | Só quando o prompt é chamado | `*.prompt.md` |
-| `agents` | Só quando o agente é selecionado | `*.agent.md` |
-| `project` / `ci` | **Não** (não é contexto do Copilot) | `pyproject.toml`, workflows |
+| Categoria | Entra no contexto a cada prompt? | Sempre incluída? | Exemplos |
+|---|---|---|---|
+| `always-on` | **Sim** | Sim | `.github/copilot-instructions.md`, `AGENTS.md` |
+| `instructions` | Só quando o arquivo casa com `applyTo` | Sim (`--without-*` exclui) | `python.instructions.md` |
+| `skills` | Só quando a skill é acionada | Sim (`--without-*` exclui) | `SKILL.md` |
+| `prompts` | Só quando o prompt é chamado | Sim (`--without-*` exclui) | `*.prompt.md` |
+| `agents` | Só quando o agente é selecionado | Sim (`--without-*` exclui) | `*.agent.md` |
+| `base` | **Não** | Sim | `README.md`, `.gitignore`, `src/` |
+| `build` | **Não** | Opt-in (`--with-pyproject`) | `pyproject.toml`, `Makefile` |
+| `ci` | **Não** | Opt-in (`--with-pyproject`) | workflows |
+| `tests` | **Não** | Opt-in (`--with-tests`) | `tests/`, `tests.instructions.md` |
+| `examples` | **Não** | Opt-in (`--with-examples`) | módulos/queries de partida |
 
-O `--dry-run` e o `validate.py` somam tokens (~4 caracteres/token) e tratam a camada
-`always-on` com um **orçamento** (`ALWAYS_ON_BUDGET_TOKENS` em `scripts/_template_lib.py`).
-Acima do orçamento, o tooling avisa — porque é esse número que pesa em *todo* prompt.
+As categorias `build`/`ci`/`tests`/`examples` são **OFF por padrão**
+(`DEFAULT_OFF_CATEGORIES` em `scripts/_template_lib.py`): o projeto nasce cru e o
+usuário escolhe o que incluir. O `--dry-run` e o `validate.py` somam tokens
+(~4 caracteres/token) e tratam a camada `always-on` com um **orçamento**
+(`ALWAYS_ON_BUDGET_TOKENS`). Acima do orçamento, o tooling avisa — porque é esse
+número que pesa em *todo* prompt.
 
 ## Por que isso consome menos token no projeto
 

@@ -18,7 +18,7 @@ packs/             # capability packs (um por tema)
   <tema>/
     pack.toml      # metadados
     github/        # vira .github/ no projeto (instructions, skills, agents, prompts, workflows)
-    project/       # vira a raiz do projeto (código, README, etc.)
+    project/       # vira a raiz do projeto (base sempre incluída; extras são opt-in)
 scripts/
   new_project.py   # cria um projeto a partir de um profile (+ relatório de tokens)
   new_theme.py     # scaffolda um pack + profile novo no padrão
@@ -55,7 +55,20 @@ python scripts/new_project.py --profile python --target ./meu-projeto \
   --project-name "Meu Projeto"
 ```
 
-Reduza o contexto inicial com flags: `--without-agents`, `--without-skills`, `--without-prompts`, `--without-ci`.
+### O projeto nasce enxuto
+
+O padrão é um **esqueleto cru** — só `src/` (vazia), `README.md`, `AGENTS.md`, `CONTRIBUTING.md`, `.gitignore`, `.env.example` e a pasta `.github/` de orientação (instructions, agents, skills, prompts). Sem `pyproject.toml`, sem testes, sem exemplos, sem CI e **sem `uv`**. A ideia é dar orientação ao time sem poluir o repositório com arquivos que cada projeto pode ou não usar.
+
+Os extras são **opt-in** (o assistente pergunta; ou use flags):
+
+| Flag | Inclui |
+|---|---|
+| `--with-pyproject` | `pyproject.toml` + `Makefile` + CI (projeto Python instalável) |
+| `--with-tests` | testes de exemplo + a orientação de testes |
+| `--with-examples` | código/queries de partida dos packs |
+| `--with-uv` | usa `uv` nos comandos gerados (padrão: `venv` + `pip`) |
+
+E para reduzir a orientação `.github/`: `--without-agents`, `--without-skills`, `--without-prompts`.
 
 ## Profiles disponíveis
 
@@ -63,7 +76,7 @@ Reduza o contexto inicial com flags: `--without-agents`, `--without-skills`, `--
 |---|---|---|
 | `common` | common | Base para qualquer projeto |
 | `python` | common, python | Python puro, APIs, scripts |
-| `python-minimal` | common, python | Python com contexto mínimo (sem agents/skills/prompts/CI) |
+| `python-minimal` | common, python | Python com contexto mínimo (sem agents/skills/prompts) |
 | `excel` | common, python, pandas, excel | Ingestão/validação/transformação de Excel (compõe pandas) |
 | `sql` | common, sql | Queries, modelos analíticos, performance |
 | `sas` | common, sas | Análise SAS, ETL legado, migração SAS→Python |

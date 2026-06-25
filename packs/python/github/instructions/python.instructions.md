@@ -1,13 +1,13 @@
 ---
-applyTo: "**/*.py,pyproject.toml,uv.lock,requirements*.txt"
-description: Padrões de Python — uv, layout src/, type hints, logging, ruff e pytest.
+applyTo: "**/*.py,pyproject.toml,requirements*.txt"
+description: Padrões de Python — layout src/, type hints, logging, ruff e pytest.
 ---
 
 # Instruções para Python
 
 ## Ambiente
 
-- Use `uv` como gerenciador preferencial.
+- Use o gerenciador que o projeto adotar (venv + pip, uv, poetry...). Não force um.
 - Prefira projeto com layout `src/`.
 - Evite depender de estado global.
 - Não coloque caminho local fixo no código.

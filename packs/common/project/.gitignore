@@ -1,0 +1,20 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Ferramentas
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+
+# Ambiente
+.env
+
+# SO / editor
+.DS_Store
+.idea/
+.vscode/

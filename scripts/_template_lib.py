@@ -37,10 +37,23 @@ PYTHON_PACK = "python"
 ALWAYS_ON_BUDGET_TOKENS = 1500
 
 # Categorias que podem ser excluídas via flags --without-* ou exclude_categories.
-EXCLUDABLE_CATEGORIES = {"agents", "skills", "prompts", "ci", "instructions"}
+EXCLUDABLE_CATEGORIES = {"agents", "skills", "prompts", "instructions"}
+
+# Categorias OFF por padrão: só entram quando pedidas (opt-in via --with-*).
+# A ideia: o projeto nasce cru (base + orientação .github) e o resto é opcional.
+DEFAULT_OFF_CATEGORIES = {"build", "ci", "tests", "examples"}
 
 # Categorias que contam como contexto do Copilot (para relatório de token).
 CONTEXT_CATEGORIES = {"always-on", "instructions", "skills", "prompts", "agents"}
+
+# Arquivos de raiz que compõem a base mínima do projeto (sempre incluídos).
+BASE_PROJECT_FILES = {
+    "README.md",
+    "CONTRIBUTING.md",
+    ".env.example",
+    ".gitignore",
+    "src/.gitkeep",
+}
 
 
 class TemplateError(Exception):
@@ -130,10 +143,21 @@ def resolve_profile(name: str) -> ResolvedProfile:
 
 
 def classify(dest_rel: str) -> str:
-    """Classifica um arquivo pelo caminho de destino (relativo à raiz do projeto)."""
+    """Classifica um arquivo pelo caminho de destino (relativo à raiz do projeto).
+
+    Categorias de contexto (.github): always-on, instructions, skills, prompts, agents.
+    Categorias opt-in (OFF por padrão): build, ci, tests, examples.
+    Sempre incluídas: always-on e base (esqueleto mínimo do projeto).
+    """
     p = dest_rel.replace("\\", "/")
+    # Sempre carregado no contexto do Copilot.
     if p == ".github/copilot-instructions.md" or p == "AGENTS.md":
         return "always-on"
+    # Orientação ligada a testes só entra com --with-tests.
+    if p == ".github/instructions/tests.instructions.md":
+        return "tests"
+    if p == ".github/prompts/generate-tests.prompt.md":
+        return "tests"
     if p.startswith(".github/instructions/"):
         return "instructions"
     if p.startswith(".github/skills/"):
@@ -144,7 +168,15 @@ def classify(dest_rel: str) -> str:
         return "prompts"
     if p.startswith(".github/workflows/"):
         return "ci"
-    return "project"
+    # Arquivos de projeto (fora do contexto).
+    if p.startswith("tests/"):
+        return "tests"
+    if p in {"pyproject.toml", "Makefile"}:
+        return "build"
+    if p in BASE_PROJECT_FILES:
+        return "base"
+    # Resto do project/ (módulos de exemplo, queries, configs de pack) é opt-in.
+    return "examples"
 
 
 def iter_pack_files(pack: str) -> list[tuple[Path, str, str]]:

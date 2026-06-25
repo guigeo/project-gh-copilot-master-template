@@ -25,7 +25,7 @@ Campos do manifesto:
 
 - `extends`: lista de outros profiles cujos packs são herdados.
 - `packs`: packs próprios, aplicados após os herdados (tema sobrescreve base em colisão).
-- `exclude_categories`: remove categorias inteiras (`agents`, `skills`, `prompts`, `ci`, `instructions`).
+- `exclude_categories`: remove categorias da orientação `.github/` (`agents`, `skills`, `prompts`, `instructions`). As categorias `build`/`ci`/`tests`/`examples` já são OFF por padrão — só entram via `--with-*` na criação.
 
 ## Caso 2 — Novo tema (capability pack)
 

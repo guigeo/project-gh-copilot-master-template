@@ -4,37 +4,15 @@
 
 Explique em poucas linhas o que o projeto faz.
 
-## Requisitos
-
-- Python 3.12+
-- uv
-- Git
-
-## Instalação
-
-```bash
-uv sync
-```
-
-## Execução
-
-```bash
-uv run python -m nome_pacote
-```
-
-## Testes
-
-```bash
-uv run pytest
-```
-
 ## Estrutura
 
 ```text
-src/
-tests/
-docs/
+src/        código do projeto
+.github/    orientação para o GitHub Copilot (instructions, agents, skills, prompts)
 ```
+
+Coloque seu código em `src/`. Adicione `pyproject.toml`, testes ou CI conforme
+o projeto precisar — o esqueleto nasce enxuto de propósito.
 
 ## Variáveis de ambiente
 

@@ -195,9 +195,12 @@ def check_scaffold_lint(report: Report) -> None:
     new_project = Path(__file__).resolve().parent / "new_project.py"
     for name in _python_profiles():
         with tempfile.TemporaryDirectory() as tmp:
+            # Gera a variante COMPLETA (pyproject + testes + exemplos): é a que
+            # tem código Python real para o ruff checar. O default é cru (src/ vazio).
             gen = subprocess.run(
                 [sys.executable, str(new_project), "--profile", name,
-                 "--target", tmp, "--project-name", "lint check", "--force"],
+                 "--target", tmp, "--project-name", "lint check", "--force",
+                 "--with-pyproject", "--with-tests", "--with-examples"],
                 capture_output=True, text=True,
             )
             if gen.returncode != 0:

@@ -1,18 +1,18 @@
 .PHONY: install test lint format check
 
 install:
-	uv sync
+	pip install -e .
 
 test:
-	uv run pytest
+	pytest
 
 lint:
-	uv run ruff check .
+	ruff check .
 
 format:
-	uv run ruff format .
+	ruff format .
 
 check:
-	uv run ruff check .
-	uv run ruff format --check .
-	uv run pytest
+	ruff check .
+	ruff format --check .
+	pytest

@@ -25,7 +25,7 @@ from pathlib import Path
 from _template_lib import (
     ALWAYS_ON_BUDGET_TOKENS,
     CONTEXT_CATEGORIES,
-    EXCLUDABLE_CATEGORIES,
+    DEFAULT_OFF_CATEGORIES,
     PYTHON_PACK,
     ResolvedProfile,
     TemplateError,
@@ -37,7 +37,7 @@ from _template_lib import (
     resolve_profile,
 )
 
-TEMPLATE_VERSION = "2.0"
+TEMPLATE_VERSION = "2.1"
 
 CATEGORY_ORDER = [
     "always-on",
@@ -45,8 +45,11 @@ CATEGORY_ORDER = [
     "skills",
     "prompts",
     "agents",
+    "base",
+    "build",
     "ci",
-    "project",
+    "tests",
+    "examples",
 ]
 
 CATEGORY_LABEL = {
@@ -55,12 +58,20 @@ CATEGORY_LABEL = {
     "skills": "Skills (sob-demanda)",
     "prompts": "Prompts (sob-demanda)",
     "agents": "Agents (sob-demanda)",
-    "ci": "CI / workflows (fora do contexto)",
-    "project": "Arquivos de projeto (fora do contexto)",
+    "base": "Base do projeto (esqueleto, fora do contexto)",
+    "build": "Build Python (pyproject/Makefile, opt-in)",
+    "ci": "CI / workflows (opt-in)",
+    "tests": "Testes de exemplo (opt-in)",
+    "examples": "Arquivos de exemplo (opt-in)",
 }
 
 
-def flags_to_excludes(args: argparse.Namespace) -> set[str]:
+def compute_excludes(args: argparse.Namespace) -> set[str]:
+    """Resolve quais categorias NÃO entram, juntando dois mecanismos:
+
+    - Orientação .github excluível via --without-* (agents/skills/prompts).
+    - Categorias OFF por padrão (build/ci/tests/examples) que só entram com --with-*.
+    """
     excludes: set[str] = set()
     if args.without_agents:
         excludes.add("agents")
@@ -68,9 +79,16 @@ def flags_to_excludes(args: argparse.Namespace) -> set[str]:
         excludes.add("skills")
     if args.without_prompts:
         excludes.add("prompts")
-    if args.without_ci:
-        excludes.add("ci")
-    return excludes
+
+    off = set(DEFAULT_OFF_CATEGORIES)
+    if args.with_pyproject:
+        off.discard("build")
+        off.discard("ci")  # CI Python acompanha o pyproject (precisa dele pra rodar)
+    if args.with_tests:
+        off.discard("tests")
+    if args.with_examples:
+        off.discard("examples")
+    return excludes | off
 
 
 def normalize_project_name(value: str) -> str:
@@ -182,7 +200,9 @@ def compose_pyproject(target: Path, profile: ResolvedProfile) -> None:
     print(f"composed: pyproject.toml ({len(deps)} dep(s), {len(groups)} grupo(s))")
 
 
-def apply_python_project_naming(target: Path, project_name: str, force: bool) -> None:
+def apply_python_project_naming(
+    target: Path, project_name: str, ensure_package: bool, force: bool
+) -> None:
     src_root = target / "src"
     old_pkg = src_root / "nome_pacote"
     new_pkg = src_root / project_name
@@ -194,16 +214,94 @@ def apply_python_project_naming(target: Path, project_name: str, force: bool) ->
                 shutil.rmtree(new_pkg)
             old_pkg.rename(new_pkg)
             print(f"renamed package dir: nome_pacote -> {project_name}")
+    elif ensure_package and not new_pkg.is_dir():
+        # pyproject sem módulos de exemplo: cria um pacote vazio para instalar.
+        new_pkg.mkdir(parents=True, exist_ok=True)
+        (new_pkg / "__init__.py").write_text("", encoding="utf-8")
+        print(f"created package dir: src/{project_name}/__init__.py")
+    # Com um pacote real em src/, o placeholder .gitkeep não é mais necessário.
+    if new_pkg.is_dir():
+        gitkeep = src_root / ".gitkeep"
+        if gitkeep.exists():
+            gitkeep.unlink()
     replace_token_in_text_files(target, "nome_pacote", project_name)
     replace_in_file(target / "pyproject.toml", 'name = "nome-projeto"', f'name = "{project_name}"')
 
 
-def write_project_manifest(target: Path, profile: ResolvedProfile, project_name: str) -> None:
+# Conversão pip/venv -> uv aplicada só quando o usuário pede --with-uv.
+# A fonte canônica dos packs é uv-free; assim o caminho padrão (sem uv) não
+# precisa de nenhuma reescrita.
+_UV_TEXT_REPLACEMENTS = [
+    ("pip install -e .", "uv sync"),
+    ("ruff check", "uv run ruff check"),
+    ("ruff format", "uv run ruff format"),
+    ("pytest", "uv run pytest"),
+]
+
+_UV_WORKFLOW_INSTALL = """      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev"""
+
+_PIP_WORKFLOW_INSTALL = """      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install ruff pytest"""
+
+
+def apply_uv_preference(target: Path) -> None:
+    """Converte os comandos de setup para uv nos arquivos gerados.
+
+    Toca README.md, AGENTS.md, Makefile e os workflows. Idempotente o bastante
+    para o uso aqui (roda uma vez sobre fonte em pip/venv)."""
+    for rel in ("README.md", "AGENTS.md", "Makefile"):
+        path = target / rel
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8")
+        for old, new in _UV_TEXT_REPLACEMENTS:
+            text = text.replace(old, new)
+        path.write_text(text, encoding="utf-8")
+
+    workflows = target / ".github" / "workflows"
+    if workflows.is_dir():
+        for wf in workflows.glob("*.yml"):
+            text = wf.read_text(encoding="utf-8")
+            if _PIP_WORKFLOW_INSTALL in text:
+                text = text.replace(_PIP_WORKFLOW_INSTALL, _UV_WORKFLOW_INSTALL)
+                text = text.replace("ruff check", "uv run ruff check")
+                text = text.replace("ruff format", "uv run ruff format")
+                text = text.replace("run: pytest", "run: uv run pytest")
+                wf.write_text(text, encoding="utf-8")
+    print("applied: preferência uv (comandos convertidos para uv)")
+
+
+def write_project_manifest(
+    target: Path, profile: ResolvedProfile, project_name: str, args: argparse.Namespace
+) -> None:
     manifest = {
         "template_version": TEMPLATE_VERSION,
         "profile": profile.name,
         "packs": profile.packs,
         "project_name": project_name,
+        "options": {
+            "pyproject": bool(args.with_pyproject),
+            "tests": bool(args.with_tests),
+            "examples": bool(args.with_examples),
+            "uv": bool(args.with_uv),
+        },
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
     path = target / ".copilot-template.json"
@@ -279,7 +377,18 @@ def interactive_inputs() -> argparse.Namespace:
     target = str((Path(parent).expanduser() / project_name).resolve())
     print(f"  → o projeto será criado em: {target}")
 
-    full_context = _ask_yes_no("Incluir agents, skills, prompts e CI?", default=True)
+    full_context = _ask_yes_no("Incluir a orientação do Copilot (agents, skills, prompts)?",
+                               default=True)
+
+    print("\nO projeto nasce enxuto (só src/ + orientação). Extras são opcionais:")
+    with_pyproject = _ask_yes_no("Gerar projeto Python instalável (pyproject + Makefile + CI)?",
+                                 default=False)
+    with_uv = False
+    if with_pyproject:
+        with_uv = _ask_yes_no("Usar uv como gerenciador? (não = venv + pip)", default=False)
+    with_tests = _ask_yes_no("Incluir testes de exemplo?", default=False)
+    with_examples = _ask_yes_no("Incluir arquivos de exemplo (código/queries de partida)?",
+                                default=False)
 
     print()
     return argparse.Namespace(
@@ -289,7 +398,10 @@ def interactive_inputs() -> argparse.Namespace:
         without_agents=not full_context,
         without_skills=not full_context,
         without_prompts=not full_context,
-        without_ci=not full_context,
+        with_pyproject=with_pyproject,
+        with_tests=with_tests,
+        with_examples=with_examples,
+        with_uv=with_uv,
         dry_run=False,
         force=False,
         list=False,
@@ -302,10 +414,20 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--profile", help="Profile a aplicar (ver --list)")
     parser.add_argument("--target", help="Diretório destino do projeto")
     parser.add_argument("--project-name", help="Nome do projeto (normalizado para snake_case)")
-    parser.add_argument("--without-agents", action="store_true")
-    parser.add_argument("--without-skills", action="store_true")
-    parser.add_argument("--without-prompts", action="store_true")
-    parser.add_argument("--without-ci", action="store_true")
+    parser.add_argument("--without-agents", action="store_true",
+                        help="Não inclui os agents da orientação .github")
+    parser.add_argument("--without-skills", action="store_true",
+                        help="Não inclui as skills da orientação .github")
+    parser.add_argument("--without-prompts", action="store_true",
+                        help="Não inclui os prompts da orientação .github")
+    parser.add_argument("--with-pyproject", action="store_true",
+                        help="Gera pyproject.toml + Makefile + CI (projeto Python instalável)")
+    parser.add_argument("--with-tests", action="store_true",
+                        help="Inclui testes de exemplo (e a orientação de testes)")
+    parser.add_argument("--with-examples", action="store_true",
+                        help="Inclui código/queries de exemplo dos packs")
+    parser.add_argument("--with-uv", action="store_true",
+                        help="Usa uv nos comandos gerados (padrão: venv + pip)")
     parser.add_argument("--dry-run", action="store_true", help="Mostra plano + tokens, sem gravar")
     parser.add_argument("--force", action="store_true", help="Sobrescreve arquivos existentes")
     parser.add_argument("--list", action="store_true", help="Lista profiles disponíveis e sai")
@@ -336,7 +458,7 @@ def main() -> int:
 
     try:
         profile = resolve_profile(args.profile)
-        file_map = build_file_map(profile, flags_to_excludes(args))
+        file_map = build_file_map(profile, compute_excludes(args))
     except TemplateError as exc:
         print(f"ERRO: {exc}")
         return 2
@@ -360,10 +482,16 @@ def main() -> int:
     copy_files(file_map, target, args.force)
 
     if PYTHON_PACK in profile.packs:
-        compose_pyproject(target, profile)
-        apply_python_project_naming(target, project_name, args.force)
+        if args.with_pyproject:
+            compose_pyproject(target, profile)
+        # Renomeia/cria o pacote quando há módulos de exemplo ou pyproject.
+        if args.with_examples or args.with_pyproject:
+            apply_python_project_naming(target, project_name, args.with_pyproject, args.force)
 
-    write_project_manifest(target, profile, project_name)
+    if args.with_uv:
+        apply_uv_preference(target)
+
+    write_project_manifest(target, profile, project_name, args)
 
     print(f"\nProfile '{profile.name}' aplicado em: {target}")
     print(f"Nome de projeto aplicado: {project_name}")

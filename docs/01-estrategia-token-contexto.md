@@ -36,11 +36,14 @@ do projeto. O `new_project.py --dry-run` e o `validate.py` medem e orçam exatam
 
 ## Bootstrap enxuto
 
-Escolha o profile aderente ao caso de uso e reduza categorias opcionais:
+O projeto já nasce enxuto: só a base (`src/` vazia + docs) e a orientação `.github/`.
+Build (`pyproject`/CI), testes e exemplos são **opt-in** (`--with-pyproject`,
+`--with-tests`, `--with-examples`). Para reduzir ainda mais a orientação, exclua
+categorias `.github/`:
 
 ```bash
 python scripts/new_project.py --profile data-engineering --target . \
-  --without-agents --without-skills --without-prompts --without-ci --dry-run
+  --without-agents --without-skills --without-prompts --dry-run
 ```
 
 Use `--dry-run` antes de gravar para revisar o plano e o orçamento de tokens.

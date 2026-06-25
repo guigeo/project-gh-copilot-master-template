@@ -10,7 +10,7 @@ Orientações para agentes de codificação que trabalham neste repositório.
 
 ## Regras gerais
 
-- Prefira alterações pequenas, revisáveis e com testes.
+- Prefira alterações pequenas e revisáveis.
 - Não faça mudanças amplas sem explicar o plano antes.
 - Não invente dependências, caminhos, tabelas, credenciais ou ambientes.
 - Nunca exponha segredos, tokens, senhas, chaves ou dados sensíveis.
@@ -18,18 +18,17 @@ Orientações para agentes de codificação que trabalham neste repositório.
 
 ## Setup e validação
 
-Se o projeto usa Python, o gerenciador é `uv`:
+Use as ferramentas que o projeto adotar. Se houver `pyproject.toml`, lint e
+testes (quando existirem):
 
 ```bash
-uv sync
-uv run pytest
-uv run ruff check .
-uv run ruff format --check .
+ruff check .
+pytest
 ```
 
 ## Checklist antes de concluir
 
-- Código formatado e lint sem erros.
-- Testes para comportamento novo, ou justificativa da ausência.
+- Código formatado e lint sem erros (quando o projeto tiver lint configurado).
+- Testes para comportamento novo, quando o projeto tiver testes.
 - README/documentação atualizados quando uso ou configuração mudar.
 - Nenhum segredo ou caminho local fixo introduzido.
