@@ -91,6 +91,9 @@ E para reduzir a orientação `.github/`: `--without-agents`, `--without-skills`
 | `oracle` | common, sql, sql-oracle | bind variables, FETCH FIRST/ROWNUM, particionamento, hints, PL/SQL |
 | `pandas` | common, python, pandas | pandas moderno: Copy-on-Write, dtypes Arrow, vetorização, merge validado, pandera |
 | `powerpoint` | common, python, pandas, powerpoint | Deck data-driven (python-pptx): template/placeholders, gráficos/tabelas nativos |
+| `streamlit` | common, python, streamlit | App de dados: cache (cache_data/cache_resource), session_state, formulários, multipágina |
+| `teradata-pandas` | common, python, pandas, sql, sql-teradata | Extrai no Teradata e transforma com pandas moderno |
+| `hive-pyspark` | common, python, pyspark, sql, sql-hive | HiveQL (partições, ORC/Parquet) com processamento PySpark |
 
 ## Criar um tema novo
 

@@ -1,0 +1,4 @@
+name = "teradata-pandas"
+description = "Teradata + pandas: extrai/consulta no Teradata (QUALIFY, índices, COLLECT STATS) e transforma com pandas moderno (CoW, Arrow, pandera)."
+extends = ["common"]
+packs = ["python", "pandas", "sql", "sql-teradata"]

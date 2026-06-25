@@ -1,0 +1,4 @@
+name = "hive-pyspark"
+description = "Hive + PySpark: HiveQL (partições, bucketing, ORC/Parquet) com processamento Spark (SparkSession testável, otimização de jobs)."
+extends = ["common"]
+packs = ["python", "pyspark", "sql", "sql-hive"]

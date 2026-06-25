@@ -1,0 +1,4 @@
+name = "streamlit"
+description = "App de dados Streamlit: Python + cache (cache_data/cache_resource), session_state, formulários, multipágina e gráficos nativos."
+extends = ["common"]
+packs = ["python", "streamlit"]

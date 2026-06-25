@@ -1,0 +1,5 @@
+name = "streamlit"
+description = "Apps de dados Streamlit: layout multipágina, cache (cache_data/cache_resource), session_state, formulários e gráficos nativos. Instrução, skill de estrutura, agente revisor, prompt e app de exemplo. Requer o pack python."
+
+[python]
+dependencies = ["streamlit>=1.40.0"]
